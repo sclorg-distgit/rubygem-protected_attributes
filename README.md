@@ -1,0 +1,1 @@
+# rubygem-protected_attributes
