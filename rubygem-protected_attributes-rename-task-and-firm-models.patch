@@ -1,0 +1,93 @@
+From d7c38eb2fd6da85ee096fee548a0b9fcf5650563 Mon Sep 17 00:00:00 2001
+From: Pavel Valena <pvalena@redhat.com>
+Date: Wed, 6 Apr 2016 06:09:04 -0400
+Subject: [PATCH] Rename Task and Firm models
+
+---
+ test/ar_helper.rb                   |  2 +-
+ test/attribute_sanitization_test.rb | 14 +++++++-------
+ test/models/company.rb              |  2 +-
+ test/models/task.rb                 |  2 +-
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/test/ar_helper.rb b/test/ar_helper.rb
+index a71fb90..645fdd1 100644
+--- a/test/ar_helper.rb
++++ b/test/ar_helper.rb
+@@ -44,7 +44,7 @@ ActiveRecord::Schema.define do
+   end
+   add_index :subscribers, :nick, :unique => true
+
+-  create_table :tasks, :force => true do |t|
++  create_table :task_pas, :force => true do |t|
+     t.datetime :starting
+     t.datetime :ending
+   end
+diff --git a/test/attribute_sanitization_test.rb b/test/attribute_sanitization_test.rb
+index 6cab549..8ecbb07 100644
+--- a/test/attribute_sanitization_test.rb
++++ b/test/attribute_sanitization_test.rb
+@@ -97,7 +97,7 @@ class AttributeSanitizationTest < ActiveSupport::TestCase
+   end
+ 
+   def test_mass_assigning_invalid_attribute
+-    firm = Firm.new
++    firm = Firm_PA.new
+ 
+     assert_raise(ActiveRecord::UnknownAttributeError) do
+       firm.attributes = { "id" => 5, "type" => "Client", "i_dont_even_exist" => 20 }
+@@ -105,11 +105,11 @@ class AttributeSanitizationTest < ActiveSupport::TestCase
+   end
+ 
+   def test_mass_assigning_does_not_choke_on_nil
+-    assert_nil Firm.new.assign_attributes(nil)
++    assert_nil Firm_PA.new.assign_attributes(nil)
+   end
+ 
+   def test_mass_assigning_does_not_choke_on_empty_hash
+-    assert_nil Firm.new.assign_attributes({})
++    assert_nil Firm_PA.new.assign_attributes({})
+   end
+ 
+   def test_assign_attributes_uses_default_role_when_no_role_is_provided
+@@ -259,10 +259,10 @@ class AttributeSanitizationTest < ActiveSupport::TestCase
+     attribute_writers.push(:_attr_readonly) if active_record_40?
+ 
+     attribute_writers.each do |method|
+-      assert_respond_to Task, method
+-      assert_respond_to Task, "#{method}="
+-      assert_respond_to Task.new, method unless method == :configurations && !active_record_40?
+-      assert !Task.new.respond_to?("#{method}=")
++      assert_respond_to Task_PA, method
++      assert_respond_to Task_PA, "#{method}="
++      assert_respond_to Task_PA.new, method unless method == :configurations && !active_record_40?
++      assert !Task_PA.new.respond_to?("#{method}=")
+     end
+   end
+ 
+diff --git a/test/models/company.rb b/test/models/company.rb
+index 442226f..9b498ce 100644
+--- a/test/models/company.rb
++++ b/test/models/company.rb
+@@ -6,7 +6,7 @@ class Company < AbstractCompany
+   attr_protected :rating
+ end
+ 
+-class Firm < Company
++class Firm_PA < Company
+ end
+ 
+ class Corporation < Company
+diff --git a/models/task.rb b/models/task.rb
+index e36989d..a5133a4 100644
+--- a/test/models/task.rb
++++ b/test/models/task.rb
+@@ -1,4 +1,4 @@
+-class Task < ActiveRecord::Base
++class Task_PA < ActiveRecord::Base
+   def updated_at
+     ending
+   end
+-- 
+1.8.3.1
+
